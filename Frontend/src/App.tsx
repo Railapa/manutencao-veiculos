@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-
-type Vehicle = {
-  id: number,
-  marca: string,
-  modelo: string,
-  ano: number | null,
-  km_atual: number | null
-}
+import { VehicleCard } from "./components/VehicleCard"
+import type { Vehicle } from "./types"
+import { VehicleForm } from "./components/VehicleForm"
 
 const API = "http://localhost:3000"
 
@@ -54,32 +49,11 @@ function App() {
           </p>
         )}
 
+        <VehicleForm />
+
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {vehicles.map((item) => (
-            <article
-              key={item.id}
-              className="rounded-xl border-l-4 border-orange-500 bg-white p-5 shadow-sm"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-orange-600">
-                {item.marca}
-              </p>
-              <h2 className="text-xl font-bold text-gray-900">{item.modelo}</h2>
-              <p className="text-sm text-gray-500">
-                {item.ano === null ? "Ano não informado" : `Ano ${item.ano}`}
-              </p>
-
-              <div className="mt-4 border-t border-gray-100 pt-4">
-                <p className="text-xs text-gray-400">Quilometragem</p>
-                {item.km_atual === null ? (
-                  <p className="text-gray-400">Não informada</p>
-                ) : (
-                  <p className="text-2xl font-bold text-gray-900">
-                    {item.km_atual.toLocaleString("pt-BR")}{" "}
-                    <span className="text-base font-normal text-gray-500">km</span>
-                  </p>
-                )}
-              </div>
-            </article>
+            <VehicleCard vehicle={item} key={item.id} />
           ))}
         </div>
       </div>
