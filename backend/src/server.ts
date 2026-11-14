@@ -1,9 +1,11 @@
 import express from "express";
 import { pool } from "./db.js";
+import cors from "cors"
 import type { ResultSetHeader } from "mysql2";
 
 const app = express();
 app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173" }));
 
 app.get("/vehicles", async (_req, res) => {
   try {
