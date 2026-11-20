@@ -3,8 +3,7 @@ import axios from "axios"
 import { VehicleCard } from "./components/VehicleCard"
 import type { Vehicle } from "./types"
 import { VehicleForm } from "./components/VehicleForm"
-
-const API = "http://localhost:3000"
+import { API } from "./api"
 
 function App() {
 
@@ -28,6 +27,10 @@ function App() {
     callAPI()
   }, [])
 
+  function addVehicle(newVehicle: Vehicle){
+    setVehicles([...vehicles, newVehicle])
+  }
+
   return (
     <section className="min-h-screen bg-gray-100 px-4 py-8">
       <div className="mx-auto max-w-6xl">
@@ -49,7 +52,7 @@ function App() {
           </p>
         )}
 
-        <VehicleForm />
+        <VehicleForm onCreated={addVehicle} />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {vehicles.map((item) => (

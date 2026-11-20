@@ -1,24 +1,36 @@
 import { useState, type SubmitEvent } from "react"
+import { API } from "../api"
+import axios from "axios"
+import type { Vehicle } from "../types"
 
+type VehicleFormProps = {
+    onCreated: (vehicle: Vehicle) => void
+}
 
-export const VehicleForm = () => {
+export const VehicleForm = ({ onCreated }: VehicleFormProps) => {
 
     const [brand, setBrand] = useState("")
     const [model, setModel] = useState("")
     const [year, setYear] = useState("")
     const [mileage, setMileage] = useState("")
 
-    function handleSubmit(e: SubmitEvent<HTMLFormElement>){
+    async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
 
         const objetoAPI = {
             marca: brand,
             modelo: model,
-            ano: year === "" ? null : Number(year) ,
+            ano: year === "" ? null : Number(year),
             km_atual: mileage === "" ? null : Number(mileage),
         }
 
-        console.log(objetoAPI)
+        const postAPI = await axios.post<Vehicle>(`${API}/vehicles`, objetoAPI)
+        setBrand('')
+        setModel('')
+        setYear('')
+        setMileage('')
+
+        onCreated(postAPI.data)
     }
 
     return (
