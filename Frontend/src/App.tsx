@@ -17,7 +17,7 @@ function App() {
         const response = await axios.get<Vehicle[]>(`${API}/vehicles`)
         setVehicles(response.data)
       } catch (err) {
-        setError("Erro na requisição")
+        setError("Não foi possível carregar os veículos")
         console.error(err)
       } finally {
         setLoading(false)
