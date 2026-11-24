@@ -35,6 +35,14 @@ function App() {
     setVehicles(vehicles.filter((vehicleId) => vehicleId.id !== id))
   }
 
+  function updateVehicle(vehicleEdited: Vehicle){
+    setVehicles(
+      vehicles.map((item) => (
+        item.id === vehicleEdited.id ? vehicleEdited : item
+      ))
+    )
+  }
+
   return (
     <section className="min-h-screen bg-gray-100 px-4 py-8">
       <div className="mx-auto max-w-6xl">
@@ -56,11 +64,11 @@ function App() {
           </p>
         )}
 
-        <VehicleForm onCreated={addVehicle} />
+        <VehicleForm onSaved={addVehicle} />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {vehicles.map((item) => (
-            <VehicleCard vehicle={item} key={item.id} onDelete={removeVehicle} />
+            <VehicleCard vehicle={item} key={item.id} onDelete={removeVehicle} onUpdate={updateVehicle} />
           ))}
         </div>
       </div>
