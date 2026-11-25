@@ -82,6 +82,55 @@ app.delete("/vehicles/:id", async (req, res) => {
   }
 });
 
+app.get("/vehicles/:id/maintenances", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT id, veiculo_id, servico, data_servico, km, custo FROM maintenances WHERE veiculo_id = ? ORDER BY data_servico DESC",
+      [req.params.id]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao listar manutenções" });
+  }
+});
+
+app.post("/vehicles/:id/maintenances", async (req, res) => {
+  const { servico, data_servico, km, custo } = req.body ?? {};
+
+  if (!servico || !data_servico) {
+    res.status(400).json({ error: "servico e data_servico são obrigatórios" });
+    return;
+  }
+
+  try {
+    const [result] = await pool.query<ResultSetHeader>(
+      "INSERT INTO maintenances (veiculo_id, servico, data_servico, km, custo) VALUES (?, ?, ?, ?, ?)",
+      [req.params.id, servico, data_servico, km ?? null, custo ?? null]
+    );
+
+    res.status(201).json({
+      id: result.insertId,
+      veiculo_id: Number(req.params.id),
+      servico,
+      data_servico,
+      km: km ?? null,
+      custo: custo ?? null,
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      error.code === "ER_NO_REFERENCED_ROW_2"
+    ) {
+      res.status(404).json({ error: "Veículo não encontrado" });
+      return;
+    }
+    console.error(error);
+    res.status(500).json({ error: "Erro ao cadastrar manutenção" });
+  }
+});
+
 app.listen(3000, () => {
   console.log("Servidor rodando em http://localhost:3000");
 });

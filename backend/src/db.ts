@@ -13,4 +13,6 @@ export const pool = mysql.createPool({
   user: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
+  dateStrings: ["DATE"],
+  decimalNumbers: true,
 });
