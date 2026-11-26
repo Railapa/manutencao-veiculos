@@ -4,6 +4,7 @@ import { API } from "../api"
 import { useState } from "react"
 import { VehicleModal } from "./VehicleModal"
 import { VehicleForm } from "./VehicleForm"
+import { Link } from "react-router-dom"
 
 type VehicleProps = {
   vehicle: Vehicle,
@@ -18,7 +19,7 @@ export const VehicleCard = ({ vehicle, onDelete, onUpdate }: VehicleProps) => {
   const [modal, setModal] = useState(false)
 
   async function handleDelete() {
-    const confirmDelete = confirm(`Tem lcerteza que deseja apagar o veículo ${vehicle.marca} ${vehicle.modelo}?`)
+    const confirmDelete = confirm(`Tem lcerteza que deseja apagar o veículo ${vehicle.marca} ${vehicle.modelo}? Isso também apagará todas as manutenções deste veículo.`)
     if (confirmDelete === false) return
     setDeleteError("")
     try {
@@ -61,6 +62,13 @@ export const VehicleCard = ({ vehicle, onDelete, onUpdate }: VehicleProps) => {
         )}
 
         <div className="mt-4 flex justify-end gap-2 border-t border-gray-100 pt-4">
+          <Link
+            to={`/veiculos/${vehicle.id}`}
+            className="mr-auto text-sm font-semibold text-orange-600 hover:underline"
+          >
+            Ver manutenções
+          </Link>
+
           <button
             onClick={() => setModal(true)}
             type="button"
@@ -83,11 +91,11 @@ export const VehicleCard = ({ vehicle, onDelete, onUpdate }: VehicleProps) => {
 
       {modal && (
         <VehicleModal title="Editar Veículo" onClose={() => setModal(false)}>
-            <VehicleForm vehicle={vehicle} onSaved={(vehicle) => {
-              onUpdate(vehicle)
-              setModal(false)
-            }} />
-        </VehicleModal> 
+          <VehicleForm vehicle={vehicle} onSaved={(vehicle) => {
+            onUpdate(vehicle)
+            setModal(false)
+          }} />
+        </VehicleModal>
       )}
     </>
   )
