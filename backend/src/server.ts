@@ -1,7 +1,7 @@
 import express from "express";
 import { pool } from "./db.js";
 import cors from "cors"
-import type { ResultSetHeader } from "mysql2";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 
 const app = express();
 app.use(express.json());
@@ -128,6 +128,25 @@ app.post("/vehicles/:id/maintenances", async (req, res) => {
     }
     console.error(error);
     res.status(500).json({ error: "Erro ao cadastrar manutenção" });
+  }
+});
+
+app.get("/vehicles/:id", async (req, res) => {
+  try {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT * FROM vehicles WHERE id = ?",
+      [req.params.id]
+    );
+
+    if (rows.length === 0) {
+      res.status(404).json({ error: "Veículo não encontrado" });
+      return;
+    }
+
+    res.json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao buscar veículo" });
   }
 });
 
